@@ -16,10 +16,15 @@ public class MoveCamera : MonoBehaviour
     void Update()
     {
         if (!ModelHandler.model) return;
-        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButton(0)) {
-            float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * 5f;
-            float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * 5f;
-            camera.transform.position += new Vector3(mouseX, -mouseY, 0f);
+        if (Input.GetKey(KeyCode.LeftAlt)) {
+            if (Input.GetMouseButton(0)) {
+                float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * 5f;
+                float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * 5f;
+                camera.transform.position += new Vector3(mouseX, -mouseY, 0f);
+            } else if (Input.GetAxis("Mouse ScrollWheel") != 0f) {
+                float scroll = Input.GetAxis("Mouse ScrollWheel");
+                camera.transform.position += new Vector3(0f, 0f, scroll);
+            }
         }
     }
 }

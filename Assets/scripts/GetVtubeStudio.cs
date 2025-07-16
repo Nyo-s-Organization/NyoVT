@@ -90,9 +90,9 @@ public class GetVtubeStudio : MonoBehaviour
                 byte[] data = udpClient.Receive(ref remoteEP);
                 string received = Encoding.UTF8.GetString(data);
                 TrackingData trackingData = JsonUtility.FromJson<TrackingData>(received);
-                trackingPosition.x = trackingData.Position.x;
-                trackingPosition.y = trackingData.Position.y;
-                trackingPosition.z = trackingData.Position.z;
+                trackingPosition.x = trackingData.Position.x / 25f;
+                trackingPosition.y = trackingData.Position.y / 25f;
+                trackingPosition.z = -trackingData.Position.z / 25f;
                 //Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
             }
         }

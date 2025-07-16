@@ -31,6 +31,10 @@ public class UpdateModel : MonoBehaviour
         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);
         head.localRotation = Quaternion.Euler(Mathf.Sin(animation_frame / 2f) * 20f, 0f, 0f);
 
+        if (inputType == 0) {
+            model.transform.position = getVtubeStudio.trackingPosition;
+        }
+
         animation_frame += 10f * Time.deltaTime;
     }
 
