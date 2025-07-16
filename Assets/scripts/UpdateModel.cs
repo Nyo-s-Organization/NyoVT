@@ -13,6 +13,8 @@ public class UpdateModel : MonoBehaviour
     private VRMBlendShapeProxy VRMBlendShapeProxyComponent;
     private Animator animator;
     private Transform head;
+    private Transform leftUpperArm;
+    private Transform rightUpperArm;
 
     void Update()
     {
@@ -23,7 +25,7 @@ public class UpdateModel : MonoBehaviour
         }
 
         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);
-        head.localRotation = Quaternion.Euler(Mathf.Sin(animation_frame / 2f) * 30f, 0f, 0f);
+        head.localRotation = Quaternion.Euler(Mathf.Sin(animation_frame / 2f) * 20f, 0f, 0f);
 
         animation_frame += 10f * Time.deltaTime;
     }
@@ -33,5 +35,10 @@ public class UpdateModel : MonoBehaviour
         VRMBlendShapeProxyComponent = model.GetComponent<VRMBlendShapeProxy>();
         animator = model.GetComponent<Animator>();
         head = animator.GetBoneTransform(HumanBodyBones.Head);
+        leftUpperArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
+        rightUpperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
+
+        leftUpperArm.localRotation = Quaternion.Euler(0f, 0f, 75f);
+        rightUpperArm.localRotation = Quaternion.Euler(0f, 0f, -75f);
     }
 }
