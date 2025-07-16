@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 123367398}
   - component: {fileID: 123367400}
   - component: {fileID: 123367401}
+  - component: {fileID: 123367402}
   m_Layer: 0
   m_Name: Handler
   m_TagString: Untagged
@@ -333,6 +334,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 0}
+--- !u!114 &123367402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123367397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0965b8142f4a3718fbdfe9475f68ee70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iPhoneIP: 192.168.2.29
+  iPhonePort: 21412
+  listenPort: 50507
 --- !u!1 &174473316
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,6 +834,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -899,6 +916,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b7fe85bcf4a388baa6b1ee030d6b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 963194227}
+  handler: {fileID: 123367397}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

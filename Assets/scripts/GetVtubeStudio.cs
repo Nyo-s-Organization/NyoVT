@@ -9,11 +9,12 @@ public class GetVtubeStudio : MonoBehaviour
 {
     public string iPhoneIP = "192.168.2.29";
     public int iPhonePort = 21412;
-
     public int listenPort = 50507;
+    public bool isRunning = true;
 
     private UdpClient udpClient;
     private Thread listenThread;
+    private Thread sendThread;
 
     void Start()
     {
@@ -23,7 +24,18 @@ public class GetVtubeStudio : MonoBehaviour
         listenThread.IsBackground = true;
         listenThread.Start();
 
-        SendTrackingRequest();
+        sendThread = new Thread(PeriodicSendRequest);
+        sendThread.IsBackground = true;
+        sendThread.Start();
+    }
+
+    void PeriodicSendRequest()
+    {
+        while (isRunning)
+        {
+            SendTrackingRequest();
+            Thread.Sleep(4500);
+        }
     }
 
     void SendTrackingRequest()
@@ -33,17 +45,7 @@ public class GetVtubeStudio : MonoBehaviour
             UdpClient sender = new UdpClient();
             sender.Connect(iPhoneIP, iPhonePort);
 
-            var payload = new
-            {
-                messageType = "iOSTrackingDataRequest",
-                time = 5,
-                sentBy = "NyoVT",
-                ports = new int[] { listenPort }
-            };
-
-            string json = JsonUtility.ToJson(payload);
-
-            json = $"{{\"messageType\":\"iOSTrackingDataRequest\",\"time\":5,\"sentBy\":\"NyoVT\",\"ports\":[{listenPort}]}}";
+            string json = $"{{\"messageType\":\"iOSTrackingDataRequest\",\"time\":5,\"sentBy\":\"NyoVT\",\"ports\":[{listenPort}]}}";
 
             byte[] data = Encoding.UTF8.GetBytes(json);
             sender.Send(data, data.Length);
@@ -82,6 +84,7 @@ public class GetVtubeStudio : MonoBehaviour
         if (listenThread != null && listenThread.IsAlive)
         {
             listenThread.Abort();
+            sendThread.Abort();
         }
 
         if (udpClient != null)
