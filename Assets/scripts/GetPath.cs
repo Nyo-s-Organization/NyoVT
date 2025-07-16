@@ -9,12 +9,17 @@ public class GetPath : MonoBehaviour
 {
     public Button submitButton;
     public LoadModel loader;
+    public RawImage LoadingCircleImage;
 
+    public bool LoadAsync = true;
+
+    private LoadingCircle loadingCircle;
     private string modelPath = "";
-    private bool loadModel = false;
+    private int loadModel = -1;
 
     void Start()
     {
+        loadingCircle = LoadingCircleImage.GetComponent<LoadingCircle>();
         submitButton.onClick.AddListener(ShowFileBrowser);
     }
 
@@ -35,21 +40,30 @@ public class GetPath : MonoBehaviour
         {
             string filePath = FileBrowser.Result[0];
             Debug.Log("Selected file: " + filePath);
-            loadModel = true;
+            loadModel = 10;
             modelPath = filePath;
+            loadingCircle.load = true;
+            loadingCircle.isLoading = true;
         }
     }
 
     void Update()
     {
-        if (loadModel)
-        {
-            loadModel = false;
-            GameObject avatar = loader.LoadVRMModel(modelPath);
-            if (avatar != null)
-            {
-                avatar.transform.position = new Vector3(0, 0, 0);
+        if (loadModel == 0) {
+            loadModel = -1;
+            if (LoadAsync) {
+                StartCoroutine(loader.LoadVRMModelCoroutine(modelPath, (go) => {
+                    go.transform.position = Vector3.zero;
+                    loadingCircle.isLoading = false;
+                }));
+            } else {
+                GameObject avatar = loader.LoadVRMModel(modelPath);
+                if (avatar != null)
+                {
+                    avatar.transform.position = new Vector3(0, 0, 0);
+                }
+                loadingCircle.isLoading = false;
             }
-        }
+        } else if (loadModel > 0) loadModel -= 1;
     }
 }

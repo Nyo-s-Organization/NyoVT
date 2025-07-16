@@ -27,4 +27,32 @@ public class LoadModel : MonoBehaviour
         Debug.Log("VRM model imported: " + loadedInstance.Root.name);
         return loadedInstance.Root;
     }
+
+    public IEnumerator LoadVRMModelCoroutine(string path, System.Action<GameObject> onComplete)
+    {
+        if (!path.ToLower().EndsWith(".vrm"))
+        {
+            Debug.LogWarning("This is not a VRM file");
+            yield break;
+        }
+
+        yield return null;
+
+        using var glbData = new GlbFileParser(path).Parse();
+        yield return null;
+
+        var vrmData = new VRMData(glbData);
+        var materialGenerator = new BuiltInVrmMaterialDescriptorGenerator(vrmData.VrmExtension);
+        loadedContext = new VRMImporterContext(vrmData, materialGenerator: materialGenerator);
+        yield return null;
+
+        loadedInstance = loadedContext.Load();
+        yield return null;
+
+        loadedInstance.ShowMeshes();
+        loadedInstance.EnableUpdateWhenOffscreen();
+
+        Debug.Log("VRM model imported: " + loadedInstance.Root.name);
+        onComplete?.Invoke(loadedInstance.Root);
+    }
 }
