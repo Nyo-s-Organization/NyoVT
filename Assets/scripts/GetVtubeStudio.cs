@@ -31,6 +31,7 @@ public class GetVtubeStudio : MonoBehaviour
     public bool isRunning = true;
 
     public Vector3 trackingPosition;
+    public Vector3 trackingRotation;
 
     private UdpClient udpClient;
     private Thread listenThread;
@@ -93,6 +94,9 @@ public class GetVtubeStudio : MonoBehaviour
                 trackingPosition.x = trackingData.Position.x / 25f;
                 trackingPosition.y = trackingData.Position.y / 25f;
                 trackingPosition.z = -trackingData.Position.z / 25f;
+                trackingRotation.x = -trackingData.Rotation.x;
+                trackingRotation.y = trackingData.Rotation.y;
+                trackingRotation.z = -trackingData.Rotation.z;
                 //Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
             }
         }

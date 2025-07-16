@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using VRM;
 
 public class UpdateModel : MonoBehaviour
@@ -9,6 +10,8 @@ public class UpdateModel : MonoBehaviour
 
     public int inputType;
     public GetVtubeStudio getVtubeStudio;
+
+    public Button resetButton;
     
     private bool loaded = false;
     private float animation_frame = 0f;
@@ -18,6 +21,18 @@ public class UpdateModel : MonoBehaviour
     private Transform head;
     private Transform leftUpperArm;
     private Transform rightUpperArm;
+
+    private Vector3 callibrationPosition;
+    private Vector3 callibrationRotation;
+
+    void Start() {
+        resetButton.onClick.AddListener(ResetCallibration);
+    }
+
+    void ResetCallibration() {
+        callibrationPosition = getVtubeStudio.trackingPosition;
+        callibrationRotation = getVtubeStudio.trackingRotation;
+    }
 
     void Update()
     {
@@ -29,10 +44,18 @@ public class UpdateModel : MonoBehaviour
         }
 
         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);
-        head.localRotation = Quaternion.Euler(Mathf.Sin(animation_frame / 2f) * 20f, 0f, 0f);
 
         if (inputType == 0) {
-            model.transform.position = getVtubeStudio.trackingPosition;
+            model.transform.position = new Vector3(
+                getVtubeStudio.trackingPosition.x - callibrationPosition.x,
+                getVtubeStudio.trackingPosition.y - callibrationPosition.y,
+                getVtubeStudio.trackingPosition.z - callibrationPosition.z
+            );
+            head.localRotation = Quaternion.Euler(
+                getVtubeStudio.trackingRotation.y - callibrationRotation.y,
+                getVtubeStudio.trackingRotation.x - callibrationRotation.x,
+                getVtubeStudio.trackingRotation.z - callibrationRotation.z
+            );
         }
 
         animation_frame += 10f * Time.deltaTime;

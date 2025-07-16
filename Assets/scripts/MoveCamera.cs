@@ -23,7 +23,7 @@ public class MoveCamera : MonoBehaviour
                 camera.transform.position += new Vector3(mouseX, -mouseY, 0f);
             } else if (Input.GetAxis("Mouse ScrollWheel") != 0f) {
                 float scroll = Input.GetAxis("Mouse ScrollWheel");
-                camera.transform.position += new Vector3(0f, 0f, scroll);
+                camera.transform.position += new Vector3(0f, 0f, -scroll);
             }
         }
     }
