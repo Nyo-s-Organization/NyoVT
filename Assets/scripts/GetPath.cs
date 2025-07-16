@@ -10,6 +10,7 @@ public class GetPath : MonoBehaviour
     public Button submitButton;
     public LoadModel loader;
     public RawImage LoadingCircleImage;
+    public UpdateModel UpdateModelScript;
 
     public bool LoadAsync = true;
 
@@ -52,9 +53,10 @@ public class GetPath : MonoBehaviour
         if (loadModel == 0) {
             loadModel = -1;
             if (LoadAsync) {
-                StartCoroutine(loader.LoadVRMModelCoroutine(modelPath, (go) => {
-                    go.transform.position = Vector3.zero;
+                StartCoroutine(loader.LoadVRMModelCoroutine(modelPath, (avatar) => {
+                    avatar.transform.position = Vector3.zero;
                     loadingCircle.isLoading = false;
+                    UpdateModelScript.model = avatar;
                 }));
             } else {
                 GameObject avatar = loader.LoadVRMModel(modelPath);
@@ -62,6 +64,7 @@ public class GetPath : MonoBehaviour
                 {
                     avatar.transform.position = new Vector3(0, 0, 0);
                 }
+                UpdateModelScript.model = avatar;
                 loadingCircle.isLoading = false;
             }
         } else if (loadModel > 0) loadModel -= 1;

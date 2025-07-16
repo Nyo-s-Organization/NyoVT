@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 123367399}
   - component: {fileID: 123367398}
   - component: {fileID: 123367400}
+  - component: {fileID: 123367401}
   m_Layer: 0
   m_Name: Handler
   m_TagString: Untagged
@@ -289,6 +290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   submitButton: {fileID: 174473318}
   loader: {fileID: 123367400}
+  LoadingCircleImage: {fileID: 610522118}
+  UpdateModelScript: {fileID: 123367401}
+  LoadAsync: 1
 --- !u!4 &123367399
 Transform:
   m_ObjectHideFlags: 0
@@ -316,7 +320,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8a47ebb8ee641f0a8506b31fe85ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LoadingCircleImage: {fileID: 610522118}
+--- !u!114 &123367401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123367397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0ecf4605fe9ab1ada0200be9853a1e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 0}
 --- !u!1 &174473316
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,7 +638,7 @@ GameObject:
   - component: {fileID: 610522118}
   - component: {fileID: 610522120}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: LoadingCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
