@@ -6,6 +6,9 @@ using VRM;
 public class UpdateModel : MonoBehaviour
 {
     public GameObject model;
+
+    public int inputType;
+    public GetVtubeStudio getVtubeStudio;
     
     private bool loaded = false;
     private float animation_frame = 0f;
@@ -22,6 +25,7 @@ public class UpdateModel : MonoBehaviour
         if (!loaded) {
             loaded = true;
             loadParameters(model);
+            getVtubeStudio.StartVtubeStudio();
         }
 
         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);

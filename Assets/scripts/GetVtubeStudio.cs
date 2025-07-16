@@ -5,6 +5,24 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+[Serializable]
+public class Vector3Data
+{
+    public float x;
+    public float y;
+    public float z;
+}
+
+[Serializable]
+public class TrackingData
+{
+    public long Timestamp;
+    public int Hotkey;
+    public bool FaceFound;
+    public Vector3Data Position;
+    public Vector3Data Rotation;
+}
+
 public class GetVtubeStudio : MonoBehaviour
 {
     public string iPhoneIP = "192.168.2.29";
@@ -12,11 +30,13 @@ public class GetVtubeStudio : MonoBehaviour
     public int listenPort = 50507;
     public bool isRunning = true;
 
+    public Vector3 trackingPosition;
+
     private UdpClient udpClient;
     private Thread listenThread;
     private Thread sendThread;
 
-    void Start()
+    public void StartVtubeStudio()
     {
         udpClient = new UdpClient(listenPort);
 
@@ -69,8 +89,11 @@ public class GetVtubeStudio : MonoBehaviour
             {
                 byte[] data = udpClient.Receive(ref remoteEP);
                 string received = Encoding.UTF8.GetString(data);
-
-                Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
+                TrackingData trackingData = JsonUtility.FromJson<TrackingData>(received);
+                trackingPosition.x = trackingData.Position.x;
+                trackingPosition.y = trackingData.Position.y;
+                trackingPosition.z = trackingData.Position.z;
+                //Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
             }
         }
         catch (Exception ex)
