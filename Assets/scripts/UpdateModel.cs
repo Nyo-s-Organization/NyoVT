@@ -17,6 +17,7 @@ public class UpdateModel : MonoBehaviour
     public Button resetButton;
 
     public GameObject settingsFrame;
+    public GameObject camera;
     
     private bool loaded = false;
     private float animation_frame = 0f;
@@ -55,12 +56,10 @@ public class UpdateModel : MonoBehaviour
             getVtubeStudio.StartVtubeStudio();
         }
 
-        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);
-
         if (inputType == 0) {
             if (settingsFrame.active) {
                 model.transform.position = new Vector3(
-                    0.2f,
+                    0.2f + camera.transform.position.x,
                     getVtubeStudio.trackingPosition.y - callibrationPosition.y,
                     getVtubeStudio.trackingPosition.z - callibrationPosition.z
                 );
@@ -80,21 +79,35 @@ public class UpdateModel : MonoBehaviour
             leftEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeLeft.x, getVtubeStudio.eyeLeft.y, getVtubeStudio.eyeLeft.z);
             rightEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeRight.x, getVtubeStudio.eyeRight.y, getVtubeStudio.eyeRight.z);
 
+            float smile = 0f;
+
             foreach (BlendShape shape in getVtubeStudio.blendShapes)
             {
                 switch (shape.k) {
                     case "eyeBlink_L":
                         if (hasBlinkL) {
-                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, shape.v * 2f);
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, Mathf.Clamp(shape.v * 2f, 0f, 1f));
                         }
                     break;
                     case "eyeBlink_R":
                         if (hasBlinkR) {
-                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, shape.v * 2f);
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, Mathf.Clamp(shape.v * 2f, 0f, 1f));
                         }
+                    break;
+                    case "jawOpen":
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.O, Mathf.Clamp(shape.v, 0f, 1f));
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, Mathf.Clamp(shape.v, 0f, 1f));
+                    break;
+                    case "mouthSmile_L":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
+                    break;
+                    case "mouthSmile_R":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
                     break;
                 }
             }
+
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
         }
 
         animation_frame += 10f * Time.deltaTime;

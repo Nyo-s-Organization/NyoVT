@@ -6,6 +6,7 @@ public class MoveCamera : MonoBehaviour
 {
     public Camera camera;
     public GameObject handler;
+    public GameObject settingsFrame;
 
     private UpdateModel ModelHandler;
 
@@ -16,6 +17,7 @@ public class MoveCamera : MonoBehaviour
     void Update()
     {
         if (!ModelHandler.model) return;
+        if (settingsFrame.active) return;
         if (Input.GetKey(KeyCode.LeftAlt)) {
             if (Input.GetMouseButton(0)) {
                 float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * 5f;
