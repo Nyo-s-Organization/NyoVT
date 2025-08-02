@@ -15,6 +15,8 @@ public class UpdateModel : MonoBehaviour
     public GetVtubeStudio getVtubeStudio;
 
     public Button resetButton;
+
+    public GameObject settingsFrame;
     
     private bool loaded = false;
     private float animation_frame = 0f;
@@ -56,11 +58,20 @@ public class UpdateModel : MonoBehaviour
         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, (Mathf.Sin(animation_frame) + 1f) / 2f);
 
         if (inputType == 0) {
-            model.transform.position = new Vector3(
-                getVtubeStudio.trackingPosition.x - callibrationPosition.x,
-                getVtubeStudio.trackingPosition.y - callibrationPosition.y,
-                getVtubeStudio.trackingPosition.z - callibrationPosition.z
-            );
+            if (settingsFrame.active) {
+                model.transform.position = new Vector3(
+                    0.2f,
+                    getVtubeStudio.trackingPosition.y - callibrationPosition.y,
+                    getVtubeStudio.trackingPosition.z - callibrationPosition.z
+                );
+            } else {
+                model.transform.position = new Vector3(
+                    getVtubeStudio.trackingPosition.x - callibrationPosition.x,
+                    getVtubeStudio.trackingPosition.y - callibrationPosition.y,
+                    getVtubeStudio.trackingPosition.z - callibrationPosition.z
+                );
+            }
+
             head.localRotation = Quaternion.Euler(
                 getVtubeStudio.trackingRotation.y - callibrationRotation.y,
                 getVtubeStudio.trackingRotation.x - callibrationRotation.x,
