@@ -8,7 +8,10 @@ public class UpdateModel : MonoBehaviour
 {
     public GameObject model;
 
+    // input type is the kind of tracking input
+    // when it's 0 it corresponds to vseeface
     public int inputType;
+
     public GetVtubeStudio getVtubeStudio;
 
     public Button resetButton;
