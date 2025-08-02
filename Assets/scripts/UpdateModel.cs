@@ -22,6 +22,10 @@ public class UpdateModel : MonoBehaviour
     private VRMBlendShapeProxy VRMBlendShapeProxyComponent;
     private Animator animator;
     private Transform head;
+
+    private Transform leftEye;
+    private Transform rightEye;
+
     private Transform leftUpperArm;
     private Transform rightUpperArm;
 
@@ -59,6 +63,8 @@ public class UpdateModel : MonoBehaviour
                 getVtubeStudio.trackingRotation.x - callibrationRotation.x,
                 getVtubeStudio.trackingRotation.z - callibrationRotation.z
             );
+            leftEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeLeft.x, getVtubeStudio.eyeLeft.y, getVtubeStudio.eyeLeft.z);
+            rightEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeRight.x, getVtubeStudio.eyeRight.y, getVtubeStudio.eyeRight.z);
         }
 
         animation_frame += 10f * Time.deltaTime;
@@ -69,6 +75,10 @@ public class UpdateModel : MonoBehaviour
         VRMBlendShapeProxyComponent = model.GetComponent<VRMBlendShapeProxy>();
         animator = model.GetComponent<Animator>();
         head = animator.GetBoneTransform(HumanBodyBones.Head);
+
+        leftEye = animator.GetBoneTransform(HumanBodyBones.LeftEye);
+        rightEye = animator.GetBoneTransform(HumanBodyBones.RightEye);
+
         leftUpperArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
         rightUpperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
 

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -14,6 +15,13 @@ public class Vector3Data
 }
 
 [Serializable]
+public class BlendShape
+{
+    public string k;  // key
+    public float v;   // value
+}
+
+[Serializable]
 public class TrackingData
 {
     public long Timestamp;
@@ -21,6 +29,9 @@ public class TrackingData
     public bool FaceFound;
     public Vector3Data Position;
     public Vector3Data Rotation;
+    public Vector3Data EyeLeft;
+    public Vector3Data EyeRight;
+    public List<BlendShape> BlendShapes;
 }
 
 public class GetVtubeStudio : MonoBehaviour
@@ -32,6 +43,8 @@ public class GetVtubeStudio : MonoBehaviour
 
     public Vector3 trackingPosition;
     public Vector3 trackingRotation;
+    public Vector3 eyeLeft;
+    public Vector3 eyeRight;
 
     private UdpClient udpClient;
     private Thread listenThread;
@@ -91,13 +104,22 @@ public class GetVtubeStudio : MonoBehaviour
                 byte[] data = udpClient.Receive(ref remoteEP);
                 string received = Encoding.UTF8.GetString(data);
                 TrackingData trackingData = JsonUtility.FromJson<TrackingData>(received);
+
                 trackingPosition.x = trackingData.Position.x / 25f;
                 trackingPosition.y = trackingData.Position.y / 25f;
                 trackingPosition.z = -trackingData.Position.z / 25f;
                 trackingRotation.x = -trackingData.Rotation.x;
                 trackingRotation.y = trackingData.Rotation.y;
                 trackingRotation.z = -trackingData.Rotation.z;
-                //Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
+
+                eyeLeft.x = trackingData.EyeLeft.x;
+                eyeLeft.y = -trackingData.EyeLeft.y;
+                eyeLeft.z = trackingData.EyeLeft.z;
+                eyeRight.x = trackingData.EyeRight.x;
+                eyeRight.y = -trackingData.EyeRight.y;
+                eyeRight.z = trackingData.EyeRight.z;
+
+                Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
             }
         }
         catch (Exception ex)
