@@ -45,6 +45,7 @@ public class GetVtubeStudio : MonoBehaviour
     public Vector3 trackingRotation;
     public Vector3 eyeLeft;
     public Vector3 eyeRight;
+    public List<BlendShape> blendShapes;
 
     private UdpClient udpClient;
     private Thread listenThread;
@@ -118,6 +119,8 @@ public class GetVtubeStudio : MonoBehaviour
                 eyeRight.x = trackingData.EyeRight.x;
                 eyeRight.y = -trackingData.EyeRight.y;
                 eyeRight.z = trackingData.EyeRight.z;
+
+                blendShapes = trackingData.BlendShapes;
 
                 Debug.Log($"Received from {remoteEP.Address}:{remoteEP.Port} - {received}");
             }

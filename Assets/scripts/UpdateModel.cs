@@ -26,6 +26,9 @@ public class UpdateModel : MonoBehaviour
     private Transform leftEye;
     private Transform rightEye;
 
+    private bool hasBlinkL;
+    private bool hasBlinkR;
+
     private Transform leftUpperArm;
     private Transform rightUpperArm;
 
@@ -65,6 +68,22 @@ public class UpdateModel : MonoBehaviour
             );
             leftEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeLeft.x, getVtubeStudio.eyeLeft.y, getVtubeStudio.eyeLeft.z);
             rightEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeRight.x, getVtubeStudio.eyeRight.y, getVtubeStudio.eyeRight.z);
+
+            foreach (BlendShape shape in getVtubeStudio.blendShapes)
+            {
+                switch (shape.k) {
+                    case "eyeBlink_L":
+                        if (hasBlinkL) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, shape.v * 2f);
+                        }
+                    break;
+                    case "eyeBlink_R":
+                        if (hasBlinkR) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, shape.v * 2f);
+                        }
+                    break;
+                }
+            }
         }
 
         animation_frame += 10f * Time.deltaTime;
@@ -78,6 +97,9 @@ public class UpdateModel : MonoBehaviour
 
         leftEye = animator.GetBoneTransform(HumanBodyBones.LeftEye);
         rightEye = animator.GetBoneTransform(HumanBodyBones.RightEye);
+
+        hasBlinkL = VRMBlendShapeProxyComponent.GetValue(BlendShapePreset.Blink_L) >= 0f;
+        hasBlinkR = VRMBlendShapeProxyComponent.GetValue(BlendShapePreset.Blink_R) >= 0f;
 
         leftUpperArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm);
         rightUpperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
