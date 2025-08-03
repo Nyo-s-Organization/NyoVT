@@ -80,6 +80,7 @@ public class UpdateModel : MonoBehaviour
             rightEye.localRotation = Quaternion.Euler(getVtubeStudio.eyeRight.x, getVtubeStudio.eyeRight.y, getVtubeStudio.eyeRight.z);
 
             float smile = 0f;
+            float angry = 0f;
 
             foreach (BlendShape shape in getVtubeStudio.blendShapes)
             {
@@ -104,10 +105,17 @@ public class UpdateModel : MonoBehaviour
                     case "mouthSmile_R":
                         smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
                     break;
+                    case "browDown_L":
+                        angry += shape.v * 2f;
+                    break;
+                    case "browDown_R":
+                        angry += shape.v * 2f;
+                    break;
                 }
             }
 
             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Angry, Mathf.Clamp(angry, 0f, 1f));
         }
 
         animation_frame += 10f * Time.deltaTime;
