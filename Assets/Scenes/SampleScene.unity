@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 123367401}
   - component: {fileID: 123367402}
   - component: {fileID: 123367403}
+  - component: {fileID: 123367404}
   m_Layer: 0
   m_Name: Handler
   m_TagString: Untagged
@@ -374,6 +375,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonUI: {fileID: 199503585}
+--- !u!114 &123367404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123367397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e1d0563446802f491618d511aafa29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 963194227}
+  uiToggle: {fileID: 549575338}
 --- !u!1 &174473316
 GameObject:
   m_ObjectHideFlags: 0
@@ -1610,7 +1625,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 0}
+  m_BackGroundColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
