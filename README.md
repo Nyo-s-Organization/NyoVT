@@ -10,6 +10,9 @@ this is one of the compromises to using it on linux, but by using the green scre
 Why the browser streaming? On linux, specifically Wayland the loading of windows in obs is quite annoying,  
 this makes that browser sources are more reliable most of the time.
 
+# Usage
+Right now we only support using vtube studio as tracking, add your phone's ip in the settings and it'll connect to vtube studio, more platforms coming soon.  
+
 # Web Renderer
 To use the web renderer set the obs web source to https://ch4rli.me/nyovt/  
   
