@@ -60,6 +60,9 @@ public class WebStream : MonoBehaviour
     {
         var response = context.Response;
         response.ContentType = "multipart/x-mixed-replace; boundary=frame";
+        response.AddHeader("Access-Control-Allow-Origin", "*");
+        response.AddHeader("Access-Control-Allow-Headers", "*");
+        response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         Stream output = response.OutputStream;
 
         try
