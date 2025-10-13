@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [Serializable]
 public class Vector3Data
@@ -36,11 +37,16 @@ public class TrackingData
 
 public class GetVtubeStudio : MonoBehaviour
 {
-    public string iPhoneIP = "192.168.2.29";
+    [Header("UI")]
+    public TMP_InputField ipInputField; // assign in Inspector
+
+    [Header("Settings")]
+    public string iPhoneIP;
     public int iPhonePort = 21412;
     public int listenPort = 50507;
     public bool isRunning = true;
 
+    [HideInInspector]
     public Vector3 trackingPosition;
     public Vector3 trackingRotation;
     public Vector3 eyeLeft;
@@ -50,6 +56,27 @@ public class GetVtubeStudio : MonoBehaviour
     private UdpClient udpClient;
     private Thread listenThread;
     private Thread sendThread;
+
+    private void Awake()
+    {
+        // Load saved IP or default
+        iPhoneIP = PlayerPrefs.GetString("iPhoneIP", "192.168.178.1");
+
+        // Set the TMP InputField text
+        if (ipInputField != null)
+        {
+            ipInputField.text = iPhoneIP;
+            ipInputField.onEndEdit.AddListener(OnIPChanged);
+        }
+    }
+
+    private void OnIPChanged(string newIP)
+    {
+        iPhoneIP = newIP;
+        PlayerPrefs.SetString("iPhoneIP", iPhoneIP);
+        PlayerPrefs.Save();
+        Debug.Log($"Saved new iPhone IP: {iPhoneIP}");
+    }
 
     public void StartVtubeStudio()
     {
@@ -134,14 +161,11 @@ public class GetVtubeStudio : MonoBehaviour
     void OnApplicationQuit()
     {
         if (listenThread != null && listenThread.IsAlive)
-        {
             listenThread.Abort();
+        if (sendThread != null && sendThread.IsAlive)
             sendThread.Abort();
-        }
 
         if (udpClient != null)
-        {
             udpClient.Close();
-        }
     }
 }
