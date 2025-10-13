@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Net;
 using System.Threading;
 using System.IO;
+using System;
 
 public class WebStream : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class WebStream : MonoBehaviour
     private HttpListener listener;
     private readonly Queue<System.Action> mainThreadQueue = new Queue<System.Action>();
     private byte[] latestFrame;
+    private long lastFrameTime = 0;
 
     void Start()
     {
@@ -29,9 +31,12 @@ public class WebStream : MonoBehaviour
                 try
                 {
                     var context = listener.GetContext();
-                    Debug.Log("[WebStream] Got request");
+                    string path = context.Request.Url.AbsolutePath;
 
-                    ThreadPool.QueueUserWorkItem(_ => HandleMJPEGStream(context));
+                    if (path == "/status")
+                        HandleStatusRequest(context);
+                    else
+                        ThreadPool.QueueUserWorkItem(_ => HandleMJPEGStream(context));
                 }
                 catch { break; }
             }
@@ -47,6 +52,8 @@ public class WebStream : MonoBehaviour
         RenderTexture.active = null;
 
         latestFrame = tex.EncodeToJPG();
+        lastFrameTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
         Destroy(tex);
 
         lock (mainThreadQueue)
@@ -54,6 +61,24 @@ public class WebStream : MonoBehaviour
             while (mainThreadQueue.Count > 0)
                 mainThreadQueue.Dequeue()?.Invoke();
         }
+    }
+
+    private void HandleStatusRequest(HttpListenerContext context)
+    {
+        var response = context.Response;
+        response.ContentType = "application/json";
+        response.AddHeader("Access-Control-Allow-Origin", "*");
+        response.AddHeader("Access-Control-Allow-Headers", "*");
+        response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
+        long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        bool alive = (now - lastFrameTime) < 5000;
+
+        string json = $"{{\"alive\":{alive.ToString().ToLower()},\"lastFrame\":{lastFrameTime}}}";
+        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(json);
+
+        response.OutputStream.Write(buffer, 0, buffer.Length);
+        response.OutputStream.Close();
     }
 
     private void HandleMJPEGStream(HttpListenerContext context)
@@ -79,7 +104,6 @@ public class WebStream : MonoBehaviour
                     output.Write(System.Text.Encoding.ASCII.GetBytes("\r\n"), 0, 2);
                     output.Flush();
                 }
-
                 Thread.Sleep(frameDelayMS);
             }
         }
