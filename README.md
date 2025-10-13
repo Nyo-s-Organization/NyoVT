@@ -11,4 +11,6 @@ Why the browser streaming? On linux, specifically Wayland the loading of windows
 this makes that browser sources are more reliable most of the time.
 
 # Web Renderer
-To use the web renderer set the obs web source to http://localhost:7829/
+To use the web renderer set the obs web source to https://ch4rli.me/nyovt/  
+Don't worry, the data isn't sent from the app to the internet, instead the page reads it from your local pc so everything stays local.  
+If you want to have this render on a different pc, set the web source to http://\[local ip]:7829/ and refresh (auto refresh only works for https://ch4rli.me/nyovt/)  
