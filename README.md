@@ -9,3 +9,6 @@ this is one of the compromises to using it on linux, but by using the green scre
 
 Why the browser streaming? On linux, specifically Wayland the loading of windows in obs is quite annoying,  
 this makes that browser sources are more reliable most of the time.
+
+# Web Renderer
+To use the web renderer set the obs web source to http://localhost:7829/
