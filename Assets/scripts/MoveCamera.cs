@@ -8,6 +8,8 @@ public class MoveCamera : MonoBehaviour
     public GameObject handler;
     public GameObject settingsFrame;
 
+    public float sensitivity;
+
     private UpdateModel ModelHandler;
 
     void Start() {
@@ -20,8 +22,8 @@ public class MoveCamera : MonoBehaviour
         if (settingsFrame.active) return;
         if (Input.GetKey(KeyCode.LeftAlt)) {
             if (Input.GetMouseButton(0)) {
-                float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * 5f;
-                float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * 5f;
+                float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * sensitivity;
+                float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * sensitivity;
                 camera.transform.position += new Vector3(mouseX, -mouseY, 0f);
             } else if (Input.GetAxis("Mouse ScrollWheel") != 0f) {
                 float scroll = Input.GetAxis("Mouse ScrollWheel");
