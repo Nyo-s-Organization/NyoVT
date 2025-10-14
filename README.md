@@ -8,7 +8,7 @@ I normally set the red ambience on VSeeFace higher so I can chroma key the gray 
 this is one of the compromises to using it on linux, but by using the green screen it would be more than possible.  
 
 Why the browser streaming? On linux, specifically Wayland the loading of windows in obs is quite annoying,  
-this makes that browser sources are more reliable most of the time.
+this makes that browser sources are more reliable.
 
 # Usage
 To use VTubeStudio, add your phone's ip in the settings and it'll connect to vtube studio.  
