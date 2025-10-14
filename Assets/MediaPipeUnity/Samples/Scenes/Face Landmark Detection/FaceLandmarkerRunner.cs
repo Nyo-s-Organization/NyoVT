@@ -174,31 +174,27 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
         return;
 
       var landmarks = result.faceLandmarks[0].landmarks;
-
-      trackingPosition = new Vector3(landmarks[1].x - 0.5f, landmarks[1].y, landmarks[1].z);
-
-      // Forward direction from eyes → nose
-      /*Vector3 leftEye = ToVec3(landmarks[33]);
-      Vector3 rightEye = ToVec3(landmarks[263]);
+      Vector3 leftEye = new Vector3(landmarks[33].x - 0.5f, landmarks[33].y - 0.5f, landmarks[33].z);
+      Vector3 rightEye = new Vector3(landmarks[263].x - 0.5f, landmarks[263].y - 0.5f, landmarks[263].z);
       Vector3 midEye = (leftEye + rightEye) * 0.5f;
-      Vector3 forward = (trackingPosition - midEye).normalized;
-      Quaternion headRotationQuat = Quaternion.LookRotation(forward, Vector3.up);
-      trackingRotation = headRotationQuat.eulerAngles;*/
+      Vector3 noseBridge = new Vector3(landmarks[6].x - 0.5f, landmarks[6].y - 0.5f, landmarks[6].z);
+      Vector3 forward = (noseBridge - midEye).normalized;
+      Vector3 up = (new Vector3(landmarks[10].x - 0.5f, landmarks[10].y - 0.5f, landmarks[10].z) - midEye).normalized;
+      Quaternion headRotationQuat = Quaternion.LookRotation(forward, up);
+      trackingPosition = new Vector3((landmarks[1].x - 0.5f) / 2f, (landmarks[1].y - 0.5f) / 2f, (landmarks[1].z) / 2f);
+      trackingRotation = headRotationQuat.eulerAngles;
 
-      //trackingPosition = ToVec3(landmarks[1].Landmark);
-      //trackingRotation = EstimateHeadEuler(landmarks);
-
-      /*eyeLeft = EstimateEyeDirection(landmarks, true);
-      eyeRight = EstimateEyeDirection(landmarks, false);
+      eyeLeft = (new Vector3(landmarks[468].x - 0.5f, landmarks[468].y - 0.5f, landmarks[468].z) - leftEye).normalized;
+      eyeRight = (new Vector3(landmarks[473].x - 0.5f, landmarks[473].y - 0.5f, landmarks[473].z) - rightEye).normalized;
 
       blendShapes = new List<BlendShape>();
       if (result.faceBlendshapes != null && result.faceBlendshapes.Count > 0)
       {
-          foreach (var shape in result.faceBlendshapes[0].Categories)
-          {
-              blendShapes.Add(new BlendShape { k = shape.CategoryName, v = shape.Score });
-          }
-      }*/
+        foreach (var shape in result.faceBlendshapes[0].categories)
+        {
+          blendShapes.Add(new BlendShape { k = shape.categoryName, v = shape.score });
+        }
+      }
 
       _faceLandmarkerResultAnnotationController.DrawLater(result);
     }

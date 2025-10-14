@@ -17,6 +17,7 @@ public class UpdateModel : MonoBehaviour
     public FaceLandmarkerRunner getWebCam;
 
     public Button resetButton;
+    public Toggle useWebcam;
 
     public GameObject settingsFrame;
     public GameObject camera;
@@ -62,6 +63,8 @@ public class UpdateModel : MonoBehaviour
             loadParameters(model);
             getVtubeStudio.StartVtubeStudio();
         }
+
+        inputType = useWebcam.isOn ? 1 : 0;
 
         if (inputType == 0) {
             if (settingsFrame.active) {
@@ -124,25 +127,28 @@ public class UpdateModel : MonoBehaviour
             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Angry, Mathf.Clamp(angry, 0f, 1f));
         } else if (inputType == 1) {
+            Vector3 targetPosition;
             if (settingsFrame.active) {
-                model.transform.position = new Vector3(
+                targetPosition = new Vector3(
                     0.2f + camera.transform.position.x,
                     getWebCam.trackingPosition.y - callibrationPosition.y,
                     getWebCam.trackingPosition.z - callibrationPosition.z
                 );
             } else {
-                model.transform.position = new Vector3(
+                targetPosition = new Vector3(
                     getWebCam.trackingPosition.x - callibrationPosition.x,
                     getWebCam.trackingPosition.y - callibrationPosition.y,
                     getWebCam.trackingPosition.z - callibrationPosition.z
                 );
             }
+            model.transform.position = Vector3.Lerp(model.transform.position, targetPosition, Time.deltaTime * 10f);
 
-            head.localRotation = Quaternion.Euler(
-                getWebCam.trackingRotation.y - callibrationRotation.y,
-                getWebCam.trackingRotation.x - callibrationRotation.x,
+            Quaternion targetRotation = Quaternion.Euler(
+                -(getWebCam.trackingRotation.x - callibrationRotation.x),
+                -(getWebCam.trackingRotation.y - callibrationRotation.y),
                 getWebCam.trackingRotation.z - callibrationRotation.z
             );
+            head.localRotation = Quaternion.Slerp(head.localRotation, targetRotation, Time.deltaTime * 10f);
             leftEye.localRotation = Quaternion.Euler(getWebCam.eyeLeft.x, getWebCam.eyeLeft.y, getWebCam.eyeLeft.z);
             rightEye.localRotation = Quaternion.Euler(getWebCam.eyeRight.x, getWebCam.eyeRight.y, getWebCam.eyeRight.z);
 
@@ -152,12 +158,12 @@ public class UpdateModel : MonoBehaviour
             foreach (Mediapipe.Unity.Sample.FaceLandmarkDetection.BlendShape shape in getWebCam.blendShapes)
             {
                 switch (shape.k) {
-                    case "eyeBlink_L":
+                    case "eyeBlinkLeft":
                         if (hasBlinkL) {
                             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, Mathf.Clamp(shape.v * 2f, 0f, 1f));
                         }
                     break;
-                    case "eyeBlink_R":
+                    case "eyeBlinkRight":
                         if (hasBlinkR) {
                             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, Mathf.Clamp(shape.v * 2f, 0f, 1f));
                         }
@@ -166,17 +172,17 @@ public class UpdateModel : MonoBehaviour
                         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.O, Mathf.Clamp(shape.v, 0f, 1f));
                         VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, Mathf.Clamp(shape.v, 0f, 1f));
                     break;
-                    case "mouthSmile_L":
+                    case "mouthSmileLeft":
                         smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
                     break;
-                    case "mouthSmile_R":
+                    case "mouthSmileRight":
                         smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
                     break;
-                    case "browDown_L":
-                        angry += shape.v * 2f;
+                    case "browDownLeft":
+                        angry += shape.v * 4f;
                     break;
-                    case "browDown_R":
-                        angry += shape.v * 2f;
+                    case "browDownRight":
+                        angry += shape.v * 4f;
                     break;
                 }
             }
