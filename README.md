@@ -11,7 +11,8 @@ Why the browser streaming? On linux, specifically Wayland the loading of windows
 this makes that browser sources are more reliable most of the time.
 
 # Usage
-Right now we only support using vtube studio as tracking, add your phone's ip in the settings and it'll connect to vtube studio, more platforms coming soon.  
+To use VTubeStudio, add your phone's ip in the settings and it'll connect to vtube studio.  
+To use WebCam, select your camera which should automatically be correct, then in settings click on use webcam.  
 
 # Web Renderer
 To use the web renderer set the obs web source to https://ch4rli.me/nyovt/  
