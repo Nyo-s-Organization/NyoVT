@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VRM;
+using Mediapipe.Unity.Sample.FaceLandmarkDetection;
 
 public class UpdateModel : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class UpdateModel : MonoBehaviour
     public int inputType;
 
     public GetVtubeStudio getVtubeStudio;
+    public FaceLandmarkerRunner getWebCam;
 
     public Button resetButton;
 
@@ -43,8 +45,13 @@ public class UpdateModel : MonoBehaviour
     }
 
     void ResetCallibration() {
-        callibrationPosition = getVtubeStudio.trackingPosition;
-        callibrationRotation = getVtubeStudio.trackingRotation;
+        if (inputType == 0) {
+            callibrationPosition = getVtubeStudio.trackingPosition;
+            callibrationRotation = getVtubeStudio.trackingRotation;
+        } else if (inputType == 1) {
+            callibrationPosition = getWebCam.trackingPosition;
+            callibrationRotation = getWebCam.trackingRotation;
+        }
     }
 
     void Update()
@@ -83,6 +90,66 @@ public class UpdateModel : MonoBehaviour
             float angry = 0f;
 
             foreach (BlendShape shape in getVtubeStudio.blendShapes)
+            {
+                switch (shape.k) {
+                    case "eyeBlink_L":
+                        if (hasBlinkL) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, Mathf.Clamp(shape.v * 2f, 0f, 1f));
+                        }
+                    break;
+                    case "eyeBlink_R":
+                        if (hasBlinkR) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, Mathf.Clamp(shape.v * 2f, 0f, 1f));
+                        }
+                    break;
+                    case "jawOpen":
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.O, Mathf.Clamp(shape.v, 0f, 1f));
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, Mathf.Clamp(shape.v, 0f, 1f));
+                    break;
+                    case "mouthSmile_L":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
+                    break;
+                    case "mouthSmile_R":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
+                    break;
+                    case "browDown_L":
+                        angry += shape.v * 2f;
+                    break;
+                    case "browDown_R":
+                        angry += shape.v * 2f;
+                    break;
+                }
+            }
+
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Angry, Mathf.Clamp(angry, 0f, 1f));
+        } else if (inputType == 1) {
+            if (settingsFrame.active) {
+                model.transform.position = new Vector3(
+                    0.2f + camera.transform.position.x,
+                    getWebCam.trackingPosition.y - callibrationPosition.y,
+                    getWebCam.trackingPosition.z - callibrationPosition.z
+                );
+            } else {
+                model.transform.position = new Vector3(
+                    getWebCam.trackingPosition.x - callibrationPosition.x,
+                    getWebCam.trackingPosition.y - callibrationPosition.y,
+                    getWebCam.trackingPosition.z - callibrationPosition.z
+                );
+            }
+
+            head.localRotation = Quaternion.Euler(
+                getWebCam.trackingRotation.y - callibrationRotation.y,
+                getWebCam.trackingRotation.x - callibrationRotation.x,
+                getWebCam.trackingRotation.z - callibrationRotation.z
+            );
+            leftEye.localRotation = Quaternion.Euler(getWebCam.eyeLeft.x, getWebCam.eyeLeft.y, getWebCam.eyeLeft.z);
+            rightEye.localRotation = Quaternion.Euler(getWebCam.eyeRight.x, getWebCam.eyeRight.y, getWebCam.eyeRight.z);
+
+            float smile = 0f;
+            float angry = 0f;
+
+            foreach (Mediapipe.Unity.Sample.FaceLandmarkDetection.BlendShape shape in getWebCam.blendShapes)
             {
                 switch (shape.k) {
                     case "eyeBlink_L":

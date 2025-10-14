@@ -4,13 +4,22 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mediapipe.Tasks.Vision.FaceLandmarker;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 {
+  [Serializable]
+  public class BlendShape
+  {
+      public string k;  // key
+      public float v;   // value
+  }
+
   public class FaceLandmarkerRunner : VisionTaskApiRunner<FaceLandmarker>
   {
     [SerializeField] private FaceLandmarkerResultAnnotationController _faceLandmarkerResultAnnotationController;
@@ -18,6 +27,12 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
     private Experimental.TextureFramePool _textureFramePool;
 
     public readonly FaceLandmarkDetectionConfig config = new FaceLandmarkDetectionConfig();
+
+    public Vector3 trackingPosition;
+    public Vector3 trackingRotation;
+    public Vector3 eyeLeft;
+    public Vector3 eyeRight;
+    public List<BlendShape> blendShapes;
 
     public override void Stop()
     {
@@ -155,7 +170,64 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 
     private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, long timestamp)
     {
+      if (result.faceLandmarks == null || result.faceLandmarks.Count == 0)
+        return;
+
+      var landmarks = result.faceLandmarks[0].landmarks;
+
+      trackingPosition = new Vector3(landmarks[1].x - 0.5f, landmarks[1].y, landmarks[1].z);
+
+      // Forward direction from eyes → nose
+      /*Vector3 leftEye = ToVec3(landmarks[33]);
+      Vector3 rightEye = ToVec3(landmarks[263]);
+      Vector3 midEye = (leftEye + rightEye) * 0.5f;
+      Vector3 forward = (trackingPosition - midEye).normalized;
+      Quaternion headRotationQuat = Quaternion.LookRotation(forward, Vector3.up);
+      trackingRotation = headRotationQuat.eulerAngles;*/
+
+      //trackingPosition = ToVec3(landmarks[1].Landmark);
+      //trackingRotation = EstimateHeadEuler(landmarks);
+
+      /*eyeLeft = EstimateEyeDirection(landmarks, true);
+      eyeRight = EstimateEyeDirection(landmarks, false);
+
+      blendShapes = new List<BlendShape>();
+      if (result.faceBlendshapes != null && result.faceBlendshapes.Count > 0)
+      {
+          foreach (var shape in result.faceBlendshapes[0].Categories)
+          {
+              blendShapes.Add(new BlendShape { k = shape.CategoryName, v = shape.Score });
+          }
+      }*/
+
       _faceLandmarkerResultAnnotationController.DrawLater(result);
     }
+
+    /*private Vector3 ToVec3(NormalizedLandmark l)
+    {
+        return new Vector3(l.X, l.Y, l.Z);
+    }*/
+
+    /*private Vector3 EstimateHeadEuler(IList<NormalizedLandmark> lm)
+    {
+        Vector3 leftEye = ToVec3(lm[33]);
+        Vector3 rightEye = ToVec3(lm[263]);
+        Vector3 nose = ToVec3(lm[1]);
+
+        Vector3 forward = (nose - (leftEye + rightEye) * 0.5f).normalized;
+        Vector3 up = Vector3.up;
+        Quaternion q = Quaternion.LookRotation(forward, up);
+
+        return q.eulerAngles;
+    }
+
+    private Vector3 EstimateEyeDirection(IList<NormalizedLandmark> lm, bool isLeft)
+    {
+        int eyeCenterIndex = isLeft ? 468 : 473;
+        int eyeSideIndex = isLeft ? 33 : 263;
+        Vector3 center = ToVec3(lm[eyeCenterIndex]);
+        Vector3 side = ToVec3(lm[eyeSideIndex]);
+        return (side - center).normalized;
+    }*/
   }
 }
