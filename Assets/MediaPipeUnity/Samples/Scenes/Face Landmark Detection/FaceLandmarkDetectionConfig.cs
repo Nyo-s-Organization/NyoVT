@@ -10,12 +10,7 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 {
   public class FaceLandmarkDetectionConfig
   {
-    public Tasks.Core.BaseOptions.Delegate Delegate { get; set; } =
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-      Tasks.Core.BaseOptions.Delegate.CPU;
-#else
-    Tasks.Core.BaseOptions.Delegate.GPU;
-#endif
+    public Tasks.Core.BaseOptions.Delegate Delegate { get; set; } = Tasks.Core.BaseOptions.Delegate.CPU;
 
     public ImageReadMode ImageReadMode { get; set; } = ImageReadMode.CPUAsync;
 
