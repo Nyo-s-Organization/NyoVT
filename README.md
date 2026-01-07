@@ -27,3 +27,10 @@ If you want to have this render on a different pc, set the web source to your lo
   - (192.x.x.x:7829) Your local ip can be used if you want the footage to go to a **different pc** on the same network (or farther away with port forwarding)
   - (127.0.0.1:7829) The local host ip, this is the same for everyone, you can use this if you want the full footage **includes greenscreen if set**
   - (https://nyo-s-organization.github.io/NyoVT/) The automatically updating endpoint, **recommended for easy setup**
+
+# Custom Movement Script (Automatization)
+Do you want to automate a vtubing character or any character?  
+We have a custom api endpoint that lets you connect to the websocket and send custom tracking data, could also be used for mocap and other use cases that require more freedom.  
+Personally I'm using this to make an automated vtuber model move on stream and add ambience, can also be used to make something like NeuroSama.  
+- How to use the api:
+  In progress
