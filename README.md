@@ -78,3 +78,16 @@ Personally I'm using this to make an automated vtuber model move on stream and a
       "blendshapes": [{"k": "jawOpen", "v": 0.75}]
   })
   ```
+- How do I load a model automatically?
+  To load a model with python you have to use the api for that, it's quite easy, just send the absolute path to the api like this:
+  ```py
+  import requests
+  import json
+  import os
+  
+  URL = "http://localhost:7830/"
+  
+  r = requests.post(URL, json={
+      "modelpath": os.path.abspath("NyoVT/model.vrm")
+  })
+  ```
