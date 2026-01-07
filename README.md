@@ -31,7 +31,7 @@ If you want to have this render on a different pc, set the web source to your lo
 # Custom Movement Script (Automatization)
 Do you want to automate a vtubing character or any character?  
 We have a custom api endpoint that lets you connect to the websocket and send custom tracking data, could also be used for mocap and other use cases that require more freedom.  
-Personally I'm using this to make an automated vtuber model move on stream and add ambience, can also be used to make something like NeuroSama.  
+Personally I'm using this to make an automated vtuber model move on stream and add ambience, can also be used to make something like NeuroSama.
 - Supported blendshapes:
   - eyeBlink_L
   - eyeBlink_R
