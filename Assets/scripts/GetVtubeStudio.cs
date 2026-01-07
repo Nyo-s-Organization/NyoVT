@@ -130,6 +130,7 @@ public class GetVtubeStudio : MonoBehaviour
             {
                 byte[] data = udpClient.Receive(ref remoteEP);
                 string received = Encoding.UTF8.GetString(data);
+                Debug.Log(received);
                 TrackingData trackingData = JsonUtility.FromJson<TrackingData>(received);
 
                 trackingPosition.x = trackingData.Position.x / 25f;

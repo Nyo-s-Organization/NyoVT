@@ -143,16 +143,9 @@ public class CustomMovementAPI : MonoBehaviour
                 );
             }
 
-            if (data.blendshape != null)
+            if (data.blendshapes != null)
             {
-                string key = data.blendshape.k;
-                float value = data.blendshape.v;
-
-                var existing = blendShapes.Find(b => b.k == key);
-                if (existing != null)
-                    existing.v = value;
-                else
-                    blendShapes.Add(new BlendShape { k = key, v = value });
+                blendShapes = data.blendshapes;
             }
         }
         catch (Exception e)
@@ -166,6 +159,6 @@ public class CustomMovementAPI : MonoBehaviour
     {
         public float[] position;
         public float[] rotation;
-        public BlendShape blendshape;
+        public List<BlendShape> blendshapes;
     }
 }
