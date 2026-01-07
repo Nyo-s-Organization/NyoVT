@@ -33,4 +33,5 @@ Do you want to automate a vtubing character or any character?
 We have a custom api endpoint that lets you connect to the websocket and send custom tracking data, could also be used for mocap and other use cases that require more freedom.  
 Personally I'm using this to make an automated vtuber model move on stream and add ambience, can also be used to make something like NeuroSama.  
 - How to use the api:
+  First connect to the websocket on 127.0.0.1:7830
   In progress
