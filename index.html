@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chroma Key Stream</title>
+<style>
+  body { margin:0; background:transparent; overflow:hidden; }
+  canvas { width:100vw; height:100vh; display:block; }
+</style>
+</head>
+<body>
+
+<img id="stream" src="http://localhost:7829/" style="
+    width: 100vw;
+    height: 100vh;
+    display: none;
+" crossorigin="anonymous">
+<canvas id="chromaCanvas"></canvas>
+
+<script>
+const streamUrl = "http://localhost:7829/";
+
+const canvas = document.getElementById('chromaCanvas');
+const ctx = canvas.getContext('2d');
+
+var dropped_frames = 0
+
+function processFrame() {
+    let img = document.getElementById("stream")
+    if (!img || !img.complete || img.naturalWidth === 0) {
+        console.log("image not ready yet")
+        dropped_frames += 1
+        if (dropped_frames >= 120) {
+            location.reload()
+        }
+        return
+    }
+
+    if (canvas.width !== img.width || canvas.height !== img.height) {
+        canvas.width = img.width;
+        canvas.height = img.height;
+    }
+
+    ctx.drawImage(img, 0, 0);
+
+    const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = frame.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        const threshold = 30;
+        const dominance = 1.2;
+
+        if (g > threshold && g > r * dominance && g > b * dominance) {
+            data[i + 0] /= 4;
+            data[i + 1] /= 4;
+            data[i + 2] /= 4;
+            data[i + 3] = 255 - g;
+        }
+    }
+
+    ctx.putImageData(frame, 0, 0);
+}
+
+function monitorStream() {
+    fetch("http://localhost:7829/status")
+        .then(res => res.json())
+        .then(data => {
+            if (!data.alive) {
+                console.warn("Stream dead — reloading...");
+                location.reload();
+            }
+        })
+        .catch(() => {
+            console.error("Stream unreachable — reloading...");
+            location.reload();
+        });
+}
+
+setInterval(monitorStream, 2000);
+setInterval(processFrame, 33)
+</script>
+</body>
+</html>
