@@ -18,7 +18,12 @@ To use WebCam, select your camera which should automatically be correct, then in
 To use the web renderer set the obs web source to https://ch4rli.me/nyovt/  
   
 Don't worry, the data isn't sent from the app to the internet, instead the page reads it from your local pc so everything stays local.  
-If you want to have this render on a different pc, set the web source to your local ip, for example: http://192.168.178.10:7829/ and refresh (auto refresh only works for https://ch4rli.me/nyovt/)  
-Why would you use web render?  
-**cross compatibility** and **privacy**,  
-the web renderer does not render ui, allowing you to make changes without anyone seeing and it works on basically every platform.
+If you want to have this render on a different pc, set the web source to your local ip, for example: http://192.168.178.10:7829/ and refresh (auto refresh only works for https://nyo-s-organization.github.io/NyoVT/)  
+- Why would you use web render?  
+  **cross compatibility** and **privacy**,  
+  the web renderer does not render ui, allowing you to make changes without anyone seeing and it works on basically every platform.
+- When should I use what url in obs or any streaming application?
+  The Web renderer is usable in a browser source ofcourse but there's still a few possible links you can use
+  - (192.x.x.x:7829) Your local ip can be used if you want the footage to go to a **different pc** on the same network (or farther away with port forwarding)
+  - (127.0.0.1:7829) The local host ip, this is the same for everyone, you can use this if you want the full footage **includes greenscreen if set**
+  - (https://nyo-s-organization.github.io/NyoVT/) The automatically updating endpoint, **recommended for easy setup**
