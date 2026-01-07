@@ -355,7 +355,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 0}
   inputType: 1
+  smoothing: 10
   getVtubeStudio: {fileID: 123367402}
+  customMovementAPI: {fileID: 123367406}
   getWebCam: {fileID: 1412872479}
   resetButton: {fileID: 265415215}
   useWebcam: {fileID: 1098698977}
@@ -439,7 +441,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   receivedPosition: {x: 0, y: 0, z: 0}
   receivedRotation: {x: 0, y: 0, z: 0}
+  eyeLeft: {x: 0, y: 0, z: 0}
+  eyeRight: {x: 0, y: 0, z: 0}
   blendShapes: []
+  InUse: 0
 --- !u!1 &174473316
 GameObject:
   m_ObjectHideFlags: 0
