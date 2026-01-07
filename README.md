@@ -59,7 +59,7 @@ Personally I'm using this to make an automated vtuber model move on stream and a
               "rotation": [0.0, 180.0, 0.0]
           }))
           await ws.send(json.dumps({
-              "blendshape": ["Smile", 0.75]
+              "blendshapes": [{"k": "jawOpen", "v": 0.75}]
           }))
   
   asyncio.run(send_messages())
@@ -75,6 +75,6 @@ Personally I'm using this to make an automated vtuber model move on stream and a
   r = requests.post(URL, json={
       "position": [1.0, 2.0, 3.0],
       "rotation": [1.0, 2.0, 3.0],
-      "blendshape": ["Smile", 0.75]
+      "blendshapes": [{"k": "jawOpen", "v": 0.75}]
   })
   ```
