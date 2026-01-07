@@ -15,7 +15,7 @@ To use VTubeStudio, add your phone's ip in the settings and it'll connect to vtu
 To use WebCam, select your camera which should automatically be correct, then in settings click on use webcam.  
 
 # Web Renderer
-To use the web renderer set the obs web source to https://ch4rli.me/nyovt/  
+To use the web renderer set the obs web source to https://nyo-s-organization.github.io/NyoVT/
   
 Don't worry, the data isn't sent from the app to the internet, instead the page reads it from your local pc so everything stays local.  
 If you want to have this render on a different pc, set the web source to your local ip, for example: http://192.168.178.10:7829/ and refresh (auto refresh only works for https://nyo-s-organization.github.io/NyoVT/)  
