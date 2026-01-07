@@ -13,7 +13,10 @@ public class UpdateModel : MonoBehaviour
     // when it's 0 it corresponds to vseeface
     public int inputType;
 
+    public float smoothing = 10f;
+
     public GetVtubeStudio getVtubeStudio;
+    public CustomMovementAPI customMovementAPI;
     public FaceLandmarkerRunner getWebCam;
 
     public Button resetButton;
@@ -66,7 +69,7 @@ public class UpdateModel : MonoBehaviour
 
         inputType = useWebcam.isOn ? 1 : 0;
 
-        if (inputType == 0) {
+        if (inputType == 0 && !customMovementAPI.InUse) {
             if (settingsFrame.active) {
                 model.transform.position = new Vector3(
                     0.2f + camera.transform.position.x,
@@ -126,7 +129,7 @@ public class UpdateModel : MonoBehaviour
 
             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
             VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Angry, Mathf.Clamp(angry, 0f, 1f));
-        } else if (inputType == 1) {
+        } else if (inputType == 1 && !customMovementAPI.InUse) {
             Vector3 targetPosition;
             if (settingsFrame.active) {
                 targetPosition = new Vector3(
@@ -141,14 +144,14 @@ public class UpdateModel : MonoBehaviour
                     getWebCam.trackingPosition.z - callibrationPosition.z
                 );
             }
-            model.transform.position = Vector3.Lerp(model.transform.position, targetPosition, Time.deltaTime * 10f);
+            model.transform.position = Vector3.Lerp(model.transform.position, targetPosition, Time.deltaTime * smoothing);
 
             Quaternion targetRotation = Quaternion.Euler(
                 -(getWebCam.trackingRotation.x - callibrationRotation.x),
                 -(getWebCam.trackingRotation.y - callibrationRotation.y),
                 getWebCam.trackingRotation.z - callibrationRotation.z
             );
-            head.localRotation = Quaternion.Slerp(head.localRotation, targetRotation, Time.deltaTime * 10f);
+            head.localRotation = Quaternion.Slerp(head.localRotation, targetRotation, Time.deltaTime * smoothing);
             leftEye.localRotation = Quaternion.Euler(getWebCam.eyeLeft.x, getWebCam.eyeLeft.y, getWebCam.eyeLeft.z);
             rightEye.localRotation = Quaternion.Euler(getWebCam.eyeRight.x, getWebCam.eyeRight.y, getWebCam.eyeRight.z);
 
@@ -183,6 +186,74 @@ public class UpdateModel : MonoBehaviour
                     break;
                     case "browDownRight":
                         angry += shape.v * 4f;
+                    break;
+                }
+            }
+
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Joy, Mathf.Clamp(smile, 0f, 1f));
+            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Angry, Mathf.Clamp(angry, 0f, 1f));
+        } else {
+            if (settingsFrame.active) {
+                model.transform.position = Vector3.Lerp(
+                    model.transform.position,
+                    new Vector3(
+                        0.2f + camera.transform.position.x,
+                        customMovementAPI.receivedPosition.y - callibrationPosition.y,
+                        customMovementAPI.receivedPosition.z - callibrationPosition.z
+                    ),
+                    Time.deltaTime * smoothing
+                );
+            } else {
+                model.transform.position = Vector3.Lerp(
+                    model.transform.position,
+                    new Vector3(
+                        customMovementAPI.receivedPosition.x - callibrationPosition.x,
+                        customMovementAPI.receivedPosition.y - callibrationPosition.y,
+                        customMovementAPI.receivedPosition.z - callibrationPosition.z
+                    ),
+                    Time.deltaTime * smoothing
+                );
+            }
+
+            head.localRotation = Quaternion.Euler(
+                customMovementAPI.receivedRotation.y - callibrationRotation.y,
+                customMovementAPI.receivedRotation.x - callibrationRotation.x,
+                customMovementAPI.receivedRotation.z - callibrationRotation.z
+            );
+            leftEye.localRotation = Quaternion.Euler(customMovementAPI.eyeLeft.x, customMovementAPI.eyeLeft.y, customMovementAPI.eyeLeft.z);
+            rightEye.localRotation = Quaternion.Euler(customMovementAPI.eyeRight.x, customMovementAPI.eyeRight.y, customMovementAPI.eyeRight.z);
+
+            float smile = 0f;
+            float angry = 0f;
+
+            foreach (BlendShape shape in customMovementAPI.blendShapes)
+            {
+                switch (shape.k) {
+                    case "eyeBlink_L":
+                        if (hasBlinkL) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_L, Mathf.Clamp(shape.v * 2f, 0f, 1f));
+                        }
+                    break;
+                    case "eyeBlink_R":
+                        if (hasBlinkR) {
+                            VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.Blink_R, Mathf.Clamp(shape.v * 2f, 0f, 1f));
+                        }
+                    break;
+                    case "jawOpen":
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.O, Mathf.Clamp(shape.v, 0f, 1f));
+                        VRMBlendShapeProxyComponent.ImmediatelySetValue(BlendShapePreset.A, Mathf.Clamp(shape.v, 0f, 1f));
+                    break;
+                    case "mouthSmile_L":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
+                    break;
+                    case "mouthSmile_R":
+                        smile += Mathf.Clamp(shape.v - 0.5f, 0f, 0.5f);
+                    break;
+                    case "browDown_L":
+                        angry += shape.v * 2f;
+                    break;
+                    case "browDown_R":
+                        angry += shape.v * 2f;
                     break;
                 }
             }

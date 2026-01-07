@@ -46,7 +46,6 @@ public class GetVtubeStudio : MonoBehaviour
     public int listenPort = 50507;
     public bool isRunning = true;
 
-    [HideInInspector]
     public Vector3 trackingPosition;
     public Vector3 trackingRotation;
     public Vector3 eyeLeft;
