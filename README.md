@@ -32,6 +32,49 @@ If you want to have this render on a different pc, set the web source to your lo
 Do you want to automate a vtubing character or any character?  
 We have a custom api endpoint that lets you connect to the websocket and send custom tracking data, could also be used for mocap and other use cases that require more freedom.  
 Personally I'm using this to make an automated vtuber model move on stream and add ambience, can also be used to make something like NeuroSama.  
-- How to use the api:  
-  First connect to the websocket on 127.0.0.1:7830  
-  In progress
+- Supported blendshapes:
+  - eyeBlink_L
+  - eyeBlink_R
+  - jawOpen
+  - mouthSmile_L
+  - mouthSmile_R
+  - browDown_L
+  - browDown_R
+- How to use the api as **websocket** (Windows only right now):  
+  ```py
+  import asyncio
+  import websockets
+  import json
+  
+  URI = "ws://localhost:7830/ws/"
+  
+  async def send_messages():
+      async with websockets.connect(URI) as ws:
+          print("Connected to Unity WebSocket")
+  
+          await ws.send(json.dumps({
+              "position": [1.0, 2.0, 3.0]
+          }))
+          await ws.send(json.dumps({
+              "rotation": [0.0, 180.0, 0.0]
+          }))
+          await ws.send(json.dumps({
+              "blendshape": ["Smile", 0.75]
+          }))
+  
+  asyncio.run(send_messages())
+  ```
+- How to use the api with **http requests** (cross platform):
+  ```py
+  import requests
+  import json
+  import time
+  
+  URL = "http://localhost:7830/"
+  
+  r = requests.post(URL, json={
+      "position": [1.0, 2.0, 3.0],
+      "rotation": [1.0, 2.0, 3.0],
+      "blendshape": ["Smile", 0.75]
+  })
+  ```
