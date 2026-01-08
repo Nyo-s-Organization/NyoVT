@@ -445,6 +445,8 @@ MonoBehaviour:
   eyeRight: {x: 0, y: 0, z: 0}
   blendShapes: []
   InUse: 0
+  loader: {fileID: 123367400}
+  UpdateModelScript: {fileID: 123367401}
 --- !u!1 &174473316
 GameObject:
   m_ObjectHideFlags: 0

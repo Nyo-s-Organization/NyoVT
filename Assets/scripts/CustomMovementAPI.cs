@@ -17,6 +17,9 @@ public class CustomMovementAPI : MonoBehaviour
     public List<BlendShape> blendShapes = new List<BlendShape>();
     public Boolean InUse = false;
 
+    public LoadModel loader;
+    public UpdateModel UpdateModelScript;
+
     private HttpListener listener;
     private CancellationTokenSource cancelSource;
 
@@ -125,6 +128,14 @@ public class CustomMovementAPI : MonoBehaviour
         {
             var data = JsonUtility.FromJson<Wrapper>(json);
 
+            if (data.modelpath != null)
+            {
+                StartCoroutine(loader.LoadVRMModelCoroutine(data.modelpath, (avatar) => {
+                    avatar.transform.position = Vector3.zero;
+                    UpdateModelScript.model = avatar;
+                }));
+            }
+
             if (data.position != null && data.position.Length == 3)
             {
                 receivedPosition = new Vector3(
@@ -157,6 +168,7 @@ public class CustomMovementAPI : MonoBehaviour
     [Serializable]
     private class Wrapper
     {
+        public string modelpath;
         public float[] position;
         public float[] rotation;
         public List<BlendShape> blendshapes;
